@@ -1,0 +1,41 @@
+@import '~swiper/css/bundle'
+@import './vars.sass'
+@import './mixins.sass'
+@import './fonts.sass'
+body
+	color: $color-main
+	height: 200vh
+
+h1
+	font-size: 75px
+	font-weight: 700
+	text-transform: uppercase
+	color: green
+	display: flex
+	justify-content: center
+	align-items: center
+
+.container
+	@include colorAndFontSize(blue, 60)
+	font-family: proximanova
+	font-weight: 400
+	background: url('../images/girl.jpg') no-repeat
+	display: grid
+
+.asd
+	height: 300px
+	position: relative
+	.swiper-slide
+		display: flex
+		justify-content: center
+		align-items: center
+
+.asdasd
+	height: 300px
+	position: relative
+	.swiper-slide
+		color: red
+		font-size: 30px
+		display: flex
+		justify-content: center
+		align-items: center
