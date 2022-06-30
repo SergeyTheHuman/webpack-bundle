@@ -1,26 +1,39 @@
 const path = require('path')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const SpriteLoaderPlugin = require('svg-sprite-loader/plugin')
 
-let mode = 'development'
+const isDev = process.env.NODE_ENV === 'development'
+const isProd = !isDev
+
+function getFilename(ext, isExtCanChange = false) {
+	if (isExtCanChange) {
+		return isDev ? `[name]${ext}` : `[name].[contenthash]${ext}`
+	}
+	return isDev ? `[name].${ext}` : `[name].[contenthash].${ext}`
+}
 
 function setMode() {
+	let mode = 'development'
 	if (process.env.NODE_ENV === 'production') mode = 'production'
+	return mode
 }
 
 function getCssLoader() {
-	return mode === 'development' ? 'style-loader' : MiniCssExtractPlugin.loader
+	return process.env.NODE_ENV === 'development' ? 'style-loader' : MiniCssExtractPlugin.loader
 }
 
 module.exports = {
 	mode: setMode(),
+	context: path.resolve(__dirname, 'src'),
 	entry: {
-		main: ['@babel/polyfill', path.resolve(__dirname, 'src/index.js')],
-		analytics: ['@babel/polyfill', path.resolve(__dirname, 'src/analytics.js')],
+		main: ['./js/index.js'],
+		analytics: ['./js/analytics.js'],
 	},
-	devtool: 'source-map',
+	devtool: isDev ? 'source-map' : false,
 	output: {
-		filename: '[name].[contenthash].js',
+		filename: `./js/${getFilename('js')}`,
 		assetModuleFilename: 'assets/[hash][ext][query]',
 		path: path.resolve(__dirname, 'dist'),
 		clean: true,
@@ -41,15 +54,26 @@ module.exports = {
 	},
 	plugins: [
 		new HTMLWebpackPlugin({
-			filename: 'index.html',
-			template: path.resolve(__dirname, 'src/index.pug'),
+			filename: `./index.html`,
+			template: './pug/index.pug',
 		}),
 		new HTMLWebpackPlugin({
-			filename: 'about.html',
-			template: path.resolve(__dirname, 'src/about.pug'),
+			filename: `./about.html`,
+			template: './pug/about.pug',
 		}),
 		new MiniCssExtractPlugin({
-			filename: '[name].[contenthash].css',
+			filename: `./css/${getFilename('css')}`,
+		}),
+		new CopyWebpackPlugin({
+			patterns: [
+				{
+					from: path.resolve(__dirname, 'src/files'),
+					to: path.resolve(__dirname, 'dist/assets/files'),
+				},
+			],
+		}),
+		new SpriteLoaderPlugin({
+			plainSprite: true,
 		}),
 	],
 	module: {
@@ -97,17 +121,25 @@ module.exports = {
 				},
 			},
 			{
-				test: /\.(png|jpg|jpeg|avif|gif|svg|webp)$/i,
+				test: /\.svg$/,
+				loader: 'svg-sprite-loader',
+				options: {
+					extract: true,
+					spriteFilename: 'assets/images/sprite.svg',
+				},
+			},
+			{
+				test: /\.(png|jpg|jpeg|avif|gif|webp|ico)$/i,
 				type: 'asset/resource',
 				generator: {
-					filename: 'assets/images/[name][ext]',
+					filename: `assets/images/${getFilename('[ext]', true)}`,
 				},
 			},
 			{
 				test: /\.(otf|ttf|woff|woff2|eot)$/i,
 				type: 'asset/resource',
 				generator: {
-					filename: 'assets/fonts/[name][ext]',
+					filename: `assets/fonts/${getFilename('[ext]', true)}`,
 				},
 			},
 		],

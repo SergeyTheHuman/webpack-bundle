@@ -1,7 +1,11 @@
 import { post } from './post.js'
 import Swiper from 'swiper/bundle'
-import './styles/styles.sass'
-import './index.pug'
+import '../styles/styles.sass'
+import '../pug/index.pug'
+// import '../svg-icons/calendar.svg'
+// import '../svg-icons/metro.svg'
+// import '../svg-icons/logo.svg'
+// import '../svg-icons/location.svg'
 
 post()
 

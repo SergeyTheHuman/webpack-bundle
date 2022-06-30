@@ -1,8 +1,9 @@
-include pug/mixins
+include components/mixins
 
 doctype html
 html(lang="ru")
-	include pug/head
+	include components/head
+	
 	body
 		a(href='./index.html')
 			h1 О нас
@@ -12,7 +13,8 @@ html(lang="ru")
 		+image('thanks.jpg')
 		.asdasd
 			.swiper-wrapper
-				.swiper-slide 111111111111111
+				.swiper-slide 
+					| 111111111111111
 				.swiper-slide 222222222222222
 				.swiper-slide 333333333333333
 				.swiper-slide 444444444444444

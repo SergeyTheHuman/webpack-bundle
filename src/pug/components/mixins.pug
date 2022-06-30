@@ -1,0 +1,10 @@
+mixin image(name)
+	img(src=require(`../../src/images/${name}`) alt=name)
+
+mixin svg(name)
+	svg(class="icon icon-" + name)
+		- path = require(`../../src/svg-icons/${name}.svg`)
+		use(xlink:href=`assets/images/sprite.svg#${name}`)
+
+mixin favicon(name)
+	link(rel="shortcut icon", href=require(`../../src/images/${name}`))
